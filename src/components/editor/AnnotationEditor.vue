@@ -4,6 +4,30 @@
 </script>
 
 <script>
+export function removeNullElements(obj) {
+    if (typeof obj !== 'object' || obj === null) {
+        return obj;
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map((item) => removeNullElements(item)).filter((item) => item !== null);
+    }
+
+    const newObj = {};
+    let hasNonNullChild = false;
+
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            const value = removeNullElements(obj[key]);
+            if (value !== null) {
+                newObj[key] = value;
+                hasNonNullChild = true;
+            }
+        }
+    }
+    return hasNonNullChild ? newObj : null;
+}
+
 export default {
     props: [
         'edits_dict',
@@ -154,29 +178,6 @@ export default {
                 }
             }
 
-            function removeNullElements(obj) {
-                if (typeof obj !== 'object' || obj === null) {
-                    return obj;
-                }
-
-                if (Array.isArray(obj)) {
-                    return obj.map((item) => removeNullElements(item)).filter((item) => item !== null);
-                }
-
-                const newObj = {};
-                let hasNonNullChild = false;
-
-                for (const key in obj) {
-                    if (obj.hasOwnProperty(key)) {
-                        const value = removeNullElements(obj[key]);
-                        if (value !== null) {
-                            newObj[key] = value;
-                            hasNonNullChild = true;
-                        }
-                    }
-                }
-                return hasNonNullChild ? newObj : null;
-            }
             let new_annotation = _.cloneDeep(this.edit_state[selected_category])
             new_span.annotation = removeNullElements(new_annotation)
 
@@ -194,30 +195,6 @@ export default {
             this.refresh_edit();
         },
         save_annotation_click(category, e) {
-            function removeNullElements(obj) {
-                if (typeof obj !== 'object' || obj === null) {
-                    return obj;
-                }
-
-                if (Array.isArray(obj)) {
-                    return obj.map((item) => removeNullElements(item)).filter((item) => item !== null);
-                }
-
-                const newObj = {};
-                let hasNonNullChild = false;
-
-                for (const key in obj) {
-                    if (obj.hasOwnProperty(key)) {
-                        const value = removeNullElements(obj[key]);
-                        if (value !== null) {
-                            newObj[key] = value;
-                            hasNonNullChild = true;
-                        }
-                    }
-                }
-                return hasNonNullChild ? newObj : null;
-            }
-
             let edit_id = this.annotating_edit_span_category_id
 
             let new_hits_data = _.cloneDeep(this.hits_data);
@@ -466,10 +443,10 @@ export default {
                         </div>
 
                         <div class="row">
-                            <!-- <div v-for="question in item.annotation" :key="question.id">
+                            <div v-for="question in item.annotation" :key="question.id">
                                 <Question :edit_state="edit_state" :empty_question_state="empty_edit_state[item.name][question.name]" :question_state="edit_state[item.name][question.name]" :question="question" :edit_type="item" :set_edit_state="set_edit_state"
                                     :config="config" :parent_show_next_question="null" isRoot=true :ref="`${item.name}_${question.name}`" :force_update="force_update_f" />
-                            </div> -->
+                            </div>
                         </div>
                     </div>
                     <div class="buttons tc">
