@@ -98,6 +98,9 @@ export default {
 
             const existingEdits = this.hits_data[this.current_hit - 1].edits;
             for (let edit of existingEdits) {
+                if (!edit.hasOwnProperty('output_idx')) {
+                    continue;
+                }
                 for (let span of edit.output_idx) {
                     let [existingStart, existingEnd] = span;
                     if (start < existingEnd && existingStart < end) {
