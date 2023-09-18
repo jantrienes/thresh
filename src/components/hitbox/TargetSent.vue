@@ -88,12 +88,23 @@ export default {
             let range = selection.getRangeAt(0);
             let [start, end] = [range.startOffset, range.endOffset];
             if (start == end || !txt.substring(start, end).trim()) {
-                this.process_source_html(null); // rerender if blocking 
+                this.process_target_html(null); // rerender if blocking 
                 return;
             }
             if (selection.anchorNode != selection.focusNode || selection.anchorNode == null) {
                 this.process_target_html_with_selected_span(selected_category)
                 return;
+            }
+
+            const existingEdits = this.hits_data[this.current_hit - 1].edits;
+            for (let edit of existingEdits) {
+                for (let span of edit.output_idx) {
+                    let [existingStart, existingEnd] = span;
+                    if (start < existingEnd && existingStart < end) {
+                        this.process_target_html(null); // rerender if blocking due to overlap
+                        return;
+                    }
+                }
             }
 
             $('#target-sentence').addClass(`select-color-${selected_category}`)
