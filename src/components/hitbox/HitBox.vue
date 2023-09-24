@@ -187,7 +187,11 @@ export default {
           return this.config.hasOwnProperty('display') && Object.values(this.config.display).includes('text-side-by-side') && this.source_exists() && this.target_exists()
         },
         file_download() {
-            handle_file_download(this.hits_data)
+            if (this.hits_data.length == 1 && this.hits_data[0].hasOwnProperty('id')) {
+                handle_file_download(this.hits_data, `${this.hits_data[0]['id']}-annotations.json`)
+            } else {
+                handle_file_download(this.hits_data)
+            }
         },
         async file_upload(e) {
             let new_hits_data = await handle_file_upload(e);
