@@ -77,7 +77,7 @@ export default {
                 let new_edit_span = ""
                 for (let i = 0; i < source_spans.length; i++) {
                     if (i != 0) {
-                        new_edit_span += `<span class="edit-type txt-${category} f3"> and </span>`
+                        new_edit_span += `<span class="edit-type txt-${category} f5"> and </span>`
                     }
                     new_edit_span += `<span class="pa1 edit-text br-pill-ns txt-${category} border-${category}-all ${category}_below">
                         &nbsp${source_sentence.substring(source_spans[i][0], source_spans[i][1])}&nbsp</span>`
@@ -88,7 +88,7 @@ export default {
                 new_edit_span = ""
                 for (let i = 0; i < target_spans.length; i++) {
                     if (i != 0) {
-                        new_edit_span += `<span class="edit-type txt-${category} f3"> and </span>`
+                        new_edit_span += `<span class="edit-type txt-${category} f5"> and </span>`
                     }
                     new_edit_span += `<span class="pa1 edit-text br-pill-ns txt-${category} border-${category}-all ${category}_below">
                         &nbsp${target_sentence.substring(target_spans[i][0], target_spans[i][1])}&nbsp</span>`
@@ -97,17 +97,17 @@ export default {
             } else if (this.getEditConfig(category)['type'] == 'composite') {
                 let new_edit_span = ""
                 let light = ""
-
-                new_edit_span += `<span class="edit-type txt-${category}${light} f3"> (</span>`;
+                
+                new_edit_span += `<span class="edit-type txt-${category}${light} f5"> (</span>`;
                 for (let j = 0; j < annotating_span['constituent_edits'].length; j++) {
                     const constituent_edit = annotating_span['constituent_edits'][j];
                     const constituent_key = constituent_edit['category'];
 
                     new_edit_span += this.render_edit_text(constituent_edit, real_id, constituent_key, light)
                     if (j == annotating_span['constituent_edits'].length - 1) {
-                        new_edit_span += `<span class="edit-type txt-${category}${light} f3"> )</span>`;
+                        new_edit_span += `<span class="edit-type txt-${category}${light} f5"> )</span>`;
                     } else {
-                        new_edit_span += `<span class="edit-type txt-${category}${light} f3"> , </span>`;
+                        new_edit_span += `<span class="edit-type txt-${category}${light} f5"> , </span>`;
                     }
                 }
                 this.set_annotating_edit_span(new_edit_span, 'composite')
@@ -190,7 +190,7 @@ export default {
                 } else if (edit_ann_type['options'] == 'textarea' || edit_ann_type['options'] == 'textbox') {
                     if (ann[ann_type_name] != null) {
                         let ann_color = 'green'
-                        ann_html += `<span class="${ann_color} br-pills ba bw1 pa1 mr2">${ann_type_label}: ${ann[ann_type_name]}</span>`;
+                        ann_html += `<span class="${ann_color} br-pills ba bw1 pa1 mr1">${ann_type_label}:</span><span> ${ann[ann_type_name]}</span>`;
                     }
                 } else {
                     // custom edit types
@@ -206,8 +206,10 @@ export default {
                         if (edit_ann_type.hasOwnProperty('options')) {
                             ann_html += this.getAnnotationHtml(edit_ann_type['options'], ann[ann_type_name])
                         }
-                    }
-                }
+                    }                            
+                } 
+
+                ann_html += '<br />'
             }
             return ann_html
         },
@@ -218,7 +220,7 @@ export default {
             let new_html = ''
             new_html += `
                 <span data-id="${key}-${i}" data-category="${key}" class="default_cursor" @mouseover="hover_span" @mouseout="un_hover_span">
-                    <span class="edit-type txt-${key}${light} f3">${edit_label} </span>`;
+                    <span class="edit-type txt-${key}${light} f5">${edit_label} </span>`;
 
             if (!edit.hasOwnProperty('input_idx') && !edit.hasOwnProperty('output_idx')) { return new_html }
 
@@ -228,7 +230,7 @@ export default {
                     for (let j = 0; j < source_spans_for_subs.length; j++) {
                         let source_span = source_spans_for_subs[j];
                         if (j != 0) {
-                            new_html += `<span class="edit-type txt-${key}${light} f3"> and </span>`;
+                            new_html += `<span class="edit-type txt-${key}${light} f5"> and </span>`;
                         }
                         new_html += `
                             <span class="pa1 edit-text br-pill-ns txt-${key}${light} border-${key}${light}-all ${key}_below" data-id="${key}-${i}" data-category="${key}">
@@ -236,14 +238,14 @@ export default {
                     }
                 }
                 if (edit.hasOwnProperty('input_idx') && edit.hasOwnProperty('output_idx')) {
-                    new_html += `<span class="edit-type txt-${key}${light} f3"> with </span>`;
+                    new_html += `<span class="edit-type txt-${key}${light} f5"> with </span>`;
                 }
                 if (edit.hasOwnProperty('output_idx')) {
                     let target_spans_for_subs = edit['output_idx']
                     for (let j = 0; j < target_spans_for_subs.length; j++) {
                         let target_span = target_spans_for_subs[j];
                         if (j != 0) {
-                            new_html += `<span class="edit-type txt-${key}${light} f3"> and </span>`;
+                            new_html += `<span class="edit-type txt-${key}${light} f5"> and </span>`;
                         }
                         new_html += `
                             <span class="pa1 edit-text br-pill-ns txt-${key}${light} border-${key}${light}-all ${key}_below" data-id="${key}-${i}" data-category="${key}">
@@ -285,8 +287,8 @@ export default {
                 let light = !this.hasAnnotation(edit) ? "-light" : ""
                 new_html += `
                     <div class='cf'>
-                        <div class="fl w-80 edit">`;
-
+                        <div class="fl w-80 mb4">`;
+                
                 // Render edit
                 const edit_config = this.getEditConfig(key)
                 const edit_label = edit_config.label ? edit_config.label : key
@@ -294,11 +296,11 @@ export default {
                     const composite_icon = this.getEditConfig(key)['icon']
                     new_html += `
                         <span data-id="${key}-${i}" data-category="${key}" class="default_cursor" @mouseover="hover_span" @mouseout="un_hover_span">
-                            <span class="edit-type txt-${key}${light} f3">${edit_label} </span>
+                            <span class="edit-type txt-${key}${light} f5">${edit_label} </span>
                             <span class="pa1 edit-text br-pill-ns txt-${key}${light} border-${key}${light}-all ${key}_below" data-id="${key}-${i}" data-category="${key}">
                                 &nbsp<i class="fa-solid ${composite_icon}"></i>&nbsp</span>
-                                <span class="edit-type txt-${key}${light} f3"> (</span>`;
-
+                                <span class="edit-type txt-${key}${light} f5"> (</span>`;
+                    
                     for (let j = 0; j < edit['constituent_edits'].length; j++) {
                         const constituent_edit = edit['constituent_edits'][j];
                         const constituent_key = constituent_edit['category'];
@@ -306,9 +308,9 @@ export default {
                         new_html += this.render_edit_text(constituent_edit, i, constituent_key, light)
                         new_html += `</span>`;
                         if (j != edit['constituent_edits'].length - 1) {
-                            new_html += `<span class="edit-type txt-${key}${light} f3"> , </span>`;
+                            new_html += `<span class="edit-type txt-${key}${light} f5"> , </span>`;
                         } else {
-                            new_html += `<span class="edit-type txt-${key}${light} f3"> )</span>`;
+                            new_html += `<span class="edit-type txt-${key}${light} f5"> )</span>`;
                         }
                     }
                 } else {
@@ -319,17 +321,19 @@ export default {
                     new_html += ` : `;
                 }
 
+                new_html += '<br />'
+
                 // Render annotation
                 if (!this.hasAnnotation(edit)) {
                     if (!this.config.disable || !Object.values(this.config.disable).includes('annotation')) {
                         new_html += `
-                            <span class="f4 i black-60">${this.config.interface_text.annotation_viewer.not_annotated_text_1} <i class="fa-solid fa-pencil"></i> ${this.config.interface_text.annotation_viewer.not_annotated_text_2}</span>
+                            <span class="f5 i black-60">${this.config.interface_text.annotation_viewer.not_annotated_text_1} <i class="fa-solid fa-pencil"></i> ${this.config.interface_text.annotation_viewer.not_annotated_text_2}</span>
                         `;
                     }
                 } else {
                     const edit_config = this.getEditConfig(key)
                     let ann_html = this.getAnnotationHtml(edit_config['annotation'], edit['annotation'])
-                    new_html += `<span class="f4 i">${ann_html}</span>`;
+                    new_html += `<span class="f5 i">${ann_html}</span>`;
                 }
 
                 let disabled = ''
@@ -521,7 +525,7 @@ export default {
     computed: {
         get_edits_html() {
             return {
-                template: `<div id="edits_html" class="f4 lh-paras">${this.edits_html}</div>`,
+                template: `<div id="edits_html" class="f5 lh-paras">${this.edits_html}</div>`,
                 methods: {
                     annotate_edit: this.annotate_edit,
                     trash_edit: this.trash_edit,
@@ -552,5 +556,5 @@ export default {
 </script>
 
 <template>
-    <component :is="get_edits_html"></component>
+    <component :is="get_edits_html"></component> 
 </template>
