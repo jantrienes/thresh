@@ -188,7 +188,12 @@ export default {
         },
         file_download() {
             if (this.hits_data.length == 1 && this.hits_data[0].hasOwnProperty('id')) {
-                this.hits_data[0]['_completed'] = new Date().toISOString();
+                if (this.hits_data[0].hasOwnProperty('_completed')) {
+                    this.hits_data[0]['_modified'] = new Date().toISOString();
+                } else {
+                    this.hits_data[0]['_completed'] = new Date().toISOString();
+                }
+                
                 handle_file_download(this.hits_data, `${this.hits_data[0]['id']}-annotations.json`)
             } else {
                 handle_file_download(this.hits_data)
